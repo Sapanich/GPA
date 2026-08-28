@@ -142,7 +142,7 @@
     let allData = [];
     let currentLevel = '';
 
-    // ⚠️ นำ URL ที่ได้จากการ Deploy Google Apps Script มาใส่ตรงนี้
+   // ⚠️ นำ URL จากการ Deploy มาวางในอัญประกาศนี้ (ต้องลงท้ายด้วย /exec)
     const API_URL = 'https://script.google.com/macros/s/AKfycbyeHP9bMwJiX7FHuits5HU7jIRfG1mci1uaPUX2I2WXEU3gicBvNjK4rxDnpw_aDC09/exec';
 
     window.onload = function() {
@@ -150,15 +150,21 @@
     };
 
     function fetchData() {
-      fetch(API_URL)
-        .then(response => response.json())
+      // เพิ่ม redirect: 'follow' เพื่อให้ดึงข้อมูลข้าม Domain ของ Google ได้ราบรื่น
+      fetch(API_URL, { redirect: 'follow' })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
         .then(data => {
           onDataLoaded(data);
         })
         .catch(error => {
           console.error('Error loading data:', error);
           document.getElementById('levelButtons').innerHTML = 
-            '<span class="text-rose-500 font-bold">เกิดข้อผิดพลาดในการดึงข้อมูล กรุณาตรวจสอบ API URL</span>';
+            '<span class="text-rose-500 font-bold">เกิดข้อผิดพลาดในการดึงข้อมูล กรุณาตรวจสอบ API URL หรือสิทธิ์การเข้าถึง</span>';
         });
     }
 
