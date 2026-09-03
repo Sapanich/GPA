@@ -323,7 +323,8 @@
 
         if (scoreVal !== '' && !isNaN(scoreVal) && grade !== '-') {
           const weightedScore = point * credits;
-          weightedElem.textContent = weightedScore.toFixed(1);
+          // แก้ไขให้แสดงเป็นจำนวนเต็ม (ตัดทศนิยมออก)[cite: 1]
+          weightedElem.textContent = weightedScore.toFixed(0);
           weightedElem.className = 'weighted-score-display font-extrabold text-emerald-600';
 
           totalPoints += weightedScore;
