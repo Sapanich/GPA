@@ -29,11 +29,39 @@
 
     <!-- Score Structure Detail Section -->
     <div class="bg-gradient-to-r from-amber-500/10 via-indigo-500/10 to-emerald-500/10 p-6 rounded-2xl border border-indigo-100 shadow-sm mb-6">
-      <div class="flex items-center gap-2 mb-4">
-        <span class="text-2xl">📊</span>
-        <h3 class="text-xl font-bold text-slate-800">รายละเอียดสัดส่วนคะแนนเก็บ (เต็ม 100 คะแนน)</h3>
+      <div class="flex items-center justify-between gap-3 mb-4 flex-wrap">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">📊</span>
+          <h3 class="text-xl font-bold text-slate-800">รายละเอียดสัดส่วนคะแนนเก็บ (เต็ม 100 คะแนน)</h3>
+        </div>
+        <button id="gradeRangeToggle" type="button" onclick="toggleGradeRanges()" aria-expanded="false"
+          aria-controls="gradeRangePanel"
+          class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm md:text-base font-semibold rounded-xl transition-all duration-200 shadow-sm flex items-center gap-2">
+          <span id="gradeRangeIcon">📋</span>
+          <span id="gradeRangeButtonText">แสดงช่วงคะแนน</span>
+        </button>
       </div>
-      
+
+      <!-- Grade Range Panel -->
+      <div id="gradeRangePanel" class="hidden mb-4 bg-white rounded-xl border border-indigo-100 shadow-sm overflow-hidden">
+        <div class="px-4 py-3 bg-indigo-50 border-b border-indigo-100">
+          <div class="font-bold text-indigo-800">เกณฑ์ช่วงคะแนนและเกรด</div>
+          <div class="text-xs text-indigo-600 mt-0.5">คะแนนรวมเต็ม 100 คะแนน</div>
+        </div>
+        <div class="p-3 sm:p-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+            <div class="flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg bg-emerald-50 border border-emerald-100"><span class="font-extrabold text-emerald-700 text-lg">4</span><span class="font-semibold text-slate-700">80 – 100 คะแนน</span></div>
+            <div class="flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg bg-indigo-50 border border-indigo-100"><span class="font-extrabold text-indigo-700 text-lg">3.5</span><span class="font-semibold text-slate-700">75 – 79 คะแนน</span></div>
+            <div class="flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg bg-indigo-50 border border-indigo-100"><span class="font-extrabold text-indigo-700 text-lg">3</span><span class="font-semibold text-slate-700">70 – 74 คะแนน</span></div>
+            <div class="flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg bg-indigo-50 border border-indigo-100"><span class="font-extrabold text-indigo-700 text-lg">2.5</span><span class="font-semibold text-slate-700">65 – 69 คะแนน</span></div>
+            <div class="flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg bg-indigo-50 border border-indigo-100"><span class="font-extrabold text-indigo-700 text-lg">2</span><span class="font-semibold text-slate-700">60 – 64 คะแนน</span></div>
+            <div class="flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg bg-indigo-50 border border-indigo-100"><span class="font-extrabold text-indigo-700 text-lg">1.5</span><span class="font-semibold text-slate-700">55 – 59 คะแนน</span></div>
+            <div class="flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg bg-indigo-50 border border-indigo-100"><span class="font-extrabold text-indigo-700 text-lg">1</span><span class="font-semibold text-slate-700">50 – 54 คะแนน</span></div>
+            <div class="flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg bg-rose-50 border border-rose-100"><span class="font-extrabold text-rose-700 text-lg">0</span><span class="font-semibold text-slate-700">0 – 49 คะแนน</span></div>
+          </div>
+        </div>
+      </div>
+
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         <div class="bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
           <div class="flex justify-between items-center mb-1">
@@ -306,6 +334,32 @@
       const inputs = document.querySelectorAll('.score-input');
       inputs.forEach(input => input.value = '');
       calculateGPA();
+    }
+
+    // แสดง/ซ่อนตารางช่วงคะแนน
+    function toggleGradeRanges() {
+      const panel = document.getElementById('gradeRangePanel');
+      const button = document.getElementById('gradeRangeToggle');
+      const buttonText = document.getElementById('gradeRangeButtonText');
+      const icon = document.getElementById('gradeRangeIcon');
+
+      const isHidden = panel.classList.contains('hidden');
+
+      if (isHidden) {
+        panel.classList.remove('hidden');
+        button.setAttribute('aria-expanded', 'true');
+        buttonText.textContent = 'ซ่อนช่วงคะแนน';
+        icon.textContent = '🔽';
+        button.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
+        button.classList.add('bg-slate-600', 'hover:bg-slate-700');
+      } else {
+        panel.classList.add('hidden');
+        button.setAttribute('aria-expanded', 'false');
+        buttonText.textContent = 'แสดงช่วงคะแนน';
+        icon.textContent = '📋';
+        button.classList.remove('bg-slate-600', 'hover:bg-slate-700');
+        button.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+      }
     }
   </script>
 </body>
