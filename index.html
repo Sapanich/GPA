@@ -154,11 +154,12 @@
               <th class="py-3 px-4 font-bold text-center w-32 whitespace-nowrap">คะแนน (เต็ม 100)</th>
               <th class="py-3 px-4 font-bold text-center whitespace-nowrap">จะได้เกรด 1 ต้องเพิ่มอีก</th>
               <th class="py-3 px-4 font-bold text-center w-24 whitespace-nowrap">เกรด</th>
+              <th class="py-3 px-4 font-bold text-center whitespace-nowrap">ผลรวมคะแนน</th>
             </tr>
           </thead>
           <tbody id="subjectTableBody" class="divide-y divide-slate-100 text-sm md:text-base">
             <tr>
-              <td colspan="6" class="p-6 text-center text-slate-400">โปรดเลือกระดับชั้นเพื่อแสดงรายวิชา</td>
+              <td colspan="7" class="p-6 text-center text-slate-400">โปรดเลือกระดับชั้นเพื่อแสดงรายวิชา</td>
             </tr>
           </tbody>
         </table>
@@ -170,7 +171,6 @@
     let allData = [];
     let currentLevel = '';
 
-   // ⚠️ นำ URL จากการ Deploy มาวางในอัญประกาศนี้ (ต้องลงท้ายด้วย /exec)
     const API_URL = 'https://script.google.com/macros/s/AKfycbyeHP9bMwJiX7FHuits5HU7jIRfG1mci1uaPUX2I2WXEU3gicBvNjK4rxDnpw_aDC09/exec';
 
     window.onload = function() {
@@ -178,7 +178,6 @@
     };
 
     function fetchData() {
-      // เพิ่ม redirect: 'follow' เพื่อให้ดึงข้อมูลข้าม Domain ของ Google ได้ราบรื่น
       fetch(API_URL, { redirect: 'follow' })
         .then(response => {
           if (!response.ok) {
@@ -257,6 +256,9 @@
           <td class="py-2.5 px-4 text-center text-base md:text-lg">
             <span class="grade-display font-bold text-slate-400">${isStatusC ? '-' : '-'}</span>
           </td>
+          <td class="py-2.5 px-4 text-center text-base md:text-lg">
+            <span class="weighted-score-display font-bold text-emerald-600">${isStatusC ? '-' : '-'}</span>
+          </td>
         `;
         tbody.appendChild(tr);
       });
@@ -292,6 +294,7 @@
         const row = input.closest('tr');
         const displayElem = row.querySelector('.grade-display');
         const neededElem = row.querySelector('.needed-score-display');
+        const weightedElem = row.querySelector('.weighted-score-display');
 
         displayElem.textContent = grade;
 
@@ -319,8 +322,15 @@
         }
 
         if (scoreVal !== '' && !isNaN(scoreVal) && grade !== '-') {
-          totalPoints += point * credits;
+          const weightedScore = point * credits;
+          weightedElem.textContent = weightedScore.toFixed(1);
+          weightedElem.className = 'weighted-score-display font-extrabold text-emerald-600';
+
+          totalPoints += weightedScore;
           totalCredits += credits;
+        } else {
+          weightedElem.textContent = '-';
+          weightedElem.className = 'weighted-score-display text-slate-400 font-bold';
         }
       });
 
